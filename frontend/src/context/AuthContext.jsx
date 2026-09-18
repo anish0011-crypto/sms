@@ -30,8 +30,15 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
+  // Call this after profile updates to sync user in context + localStorage
+  const refreshUser = (updatedFields) => {
+    const updated = { ...user, ...updatedFields };
+    localStorage.setItem('rkd_user', JSON.stringify(updated));
+    setUser(updated);
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login, logout, loading }}>
+    <AuthContext.Provider value={{ user, login, logout, loading, refreshUser }}>
       {children}
     </AuthContext.Provider>
   );

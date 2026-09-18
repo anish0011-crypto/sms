@@ -20,6 +20,7 @@ const updateStudentProfile = async (req, res) => {
     if (req.body.class !== undefined) updateFields.class = req.body.class;
     if (req.body.section !== undefined) updateFields.section = req.body.section;
     if (req.body.fatherName !== undefined) updateFields.fatherName = req.body.fatherName;
+    if (req.body.motherName !== undefined) updateFields.motherName = req.body.motherName;
     if (req.body.dob !== undefined) updateFields.dob = req.body.dob;
     if (req.body.gender !== undefined) updateFields.gender = req.body.gender;
     if (req.body.address !== undefined) updateFields.address = req.body.address;
