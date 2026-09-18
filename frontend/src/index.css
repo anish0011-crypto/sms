@@ -620,7 +620,7 @@ tbody td { padding: 12px 16px; color: var(--text); vertical-align: middle; }
   z-index: 1;
 }
 .login-input-padded {
-  padding-left: 42px !important;
+  padding: 14px 14px 14px 42px !important;
 }
 .login-input-padded-right {
   padding-right: 44px !important;
