@@ -123,4 +123,28 @@ const updateProfile = async (req, res) => {
   }
 };
 
-module.exports = { login, registerStudent, getMe, updateProfile };
+const setupInitialAccounts = async (req, res) => {
+  try {
+    const adminExists = await User.findOne({ role: 'admin' });
+    if (adminExists) {
+      return res.status(400).json({ message: 'Admin already exists. Setup cannot be run again.' });
+    }
+
+    const admin = await User.create({
+      name: 'Admin',
+      email: 'admin@rkdschool.com',
+      password: 'admin',
+      role: 'admin',
+      phone: '0000000000'
+    });
+
+    res.status(201).json({
+      message: 'Setup successful! You can now login as admin (admin@rkdschool.com / admin). From the admin dashboard, you can add teachers.',
+      admin
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+module.exports = { login, registerStudent, getMe, updateProfile, setupInitialAccounts };
