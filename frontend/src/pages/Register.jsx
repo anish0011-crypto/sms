@@ -13,7 +13,7 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (formData.password.length < 6) return toast.error('Password must be at least 6 characters');
+    if (formData.password.length < 4) return toast.error('Password must be at least 4 characters');
     setLoading(true);
     try {
       await API.post('/auth/register-student', formData);
@@ -107,11 +107,11 @@ const Register = () => {
               <input
                 type={showPass ? 'text' : 'password'}
                 className="form-input login-input-padded login-input-padded-right"
-                placeholder="Min 6 characters"
+                placeholder="Min 4 characters"
                 value={formData.password}
                 onChange={handle('password')}
                 required
-                minLength={6}
+                minLength={4}
               />
               <button
                 type="button"

@@ -9,4 +9,15 @@ export default defineConfig({
     port: 5173,
     strictPort: true,
   },
+  build: {
+    chunkSizeWarningLimit: 1000, // Raise limit to 1000 kB
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom', 'react-router-dom'],
+          charts: ['recharts'],
+        },
+      },
+    },
+  },
 })
