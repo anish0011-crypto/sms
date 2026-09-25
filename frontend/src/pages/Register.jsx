@@ -33,7 +33,7 @@ const Register = () => {
       <div className="login-blob login-blob-2" />
       <div className="login-blob login-blob-3" />
 
-      <div className="login-card" style={{ maxWidth: '460px' }}>
+      <div className="login-card">
         <div className="login-logo">
           <div className="login-logo-icon" style={{ background: 'linear-gradient(135deg, #1a6b3c, #63b3ed)' }}>🎓</div>
           <h1>Create Account</h1>
