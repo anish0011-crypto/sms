@@ -119,6 +119,36 @@ const Login = () => {
           </button>
         </form>
 
+        {/* Default Admin Credentials Card */}
+        <div className="login-credentials-card">
+          <div className="login-credentials-title">
+            <span className="login-cred-badge">
+              <span className="cred-badge-dot"></span> Admin Credentials
+            </span>
+            <button
+              type="button"
+              className="login-quick-fill-btn"
+              onClick={() => {
+                setEmail('admin@rkdschool.com');
+                setPassword('admin123');
+                toast.success('Admin credentials autofilled! ⚡');
+              }}
+            >
+              ⚡ Auto Fill
+            </button>
+          </div>
+          <div className="login-cred-details">
+            <div className="login-cred-row">
+              <span className="cred-lbl">Email / ID:</span>
+              <span className="cred-val">admin@rkdschool.com</span>
+            </div>
+            <div className="login-cred-row">
+              <span className="cred-lbl">Password:</span>
+              <span className="cred-val">admin123</span>
+            </div>
+          </div>
+        </div>
+
         <div className="login-footer">
           <span>Don't have an account?</span>
           <a href="/register" className="login-register-link">Register as Student</a>
