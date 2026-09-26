@@ -9,12 +9,15 @@ const {
   getExams, createExam, updateExam, deleteExam,
   getMarks, saveMark, saveBulkMarks, getAttendance, saveAttendance,
   getMarksheets, generateMarksheets, publishMarksheets, getMarksheetById,
+  getSettings, updateSettings,
   getReports,
 } = require('../controllers/adminController');
 
 router.use(protect, authorize('admin'));
 
 router.get('/dashboard', getDashboardStats);
+router.get('/settings', getSettings);
+router.put('/settings', updateSettings);
 router.get('/students', getStudents);
 router.post('/students', createStudent);
 router.put('/students/:id', updateStudent);

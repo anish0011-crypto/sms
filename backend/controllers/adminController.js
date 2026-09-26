@@ -7,6 +7,7 @@ const Exam = require('../models/Exam');
 const Mark = require('../models/Mark');
 const Attendance = require('../models/Attendance');
 const Marksheet = require('../models/Marksheet');
+const Setting = require('../models/Setting');
 
 // ===== DASHBOARD STATS =====
 const getDashboardStats = async (req, res) => {
@@ -294,7 +295,7 @@ const getMarksheets = async (req, res) => {
     if (req.query.section) filter.section = req.query.section;
     if (req.query.exam) filter.exam = req.query.exam;
     const marksheets = await Marksheet.find(filter)
-      .populate({ path: 'student', populate: { path: 'userId', select: 'name' } })
+      .populate({ path: 'student', populate: { path: 'userId', select: 'name email phone profileImage' } })
       .populate('exam')
       .sort('-createdAt');
     res.json(marksheets);
@@ -356,10 +357,43 @@ const publishMarksheets = async (req, res) => {
 const getMarksheetById = async (req, res) => {
   try {
     const ms = await Marksheet.findById(req.params.id)
-      .populate({ path: 'student', populate: { path: 'userId', select: 'name email' } })
+      .populate({ path: 'student', populate: { path: 'userId', select: 'name email phone profileImage' } })
       .populate('exam');
     if (!ms) return res.status(404).json({ message: 'Marksheet not found' });
     res.json(ms);
+  } catch (err) { res.status(500).json({ message: err.message }); }
+};
+
+// ===== SETTINGS =====
+const getSettings = async (req, res) => {
+  try {
+    let settings = await Setting.findOne();
+    if (!settings) {
+      settings = await Setting.create({});
+    }
+    res.json(settings);
+  } catch (err) { res.status(500).json({ message: err.message }); }
+};
+
+const updateSettings = async (req, res) => {
+  try {
+    const { schoolName, tagline, establishedYear, address, phone, email, website, currentSession, principalTitle } = req.body;
+    let settings = await Setting.findOne();
+    if (!settings) {
+      settings = new Setting({});
+    }
+    if (schoolName !== undefined) settings.schoolName = schoolName;
+    if (tagline !== undefined) settings.tagline = tagline;
+    if (establishedYear !== undefined) settings.establishedYear = establishedYear;
+    if (address !== undefined) settings.address = address;
+    if (phone !== undefined) settings.phone = phone;
+    if (email !== undefined) settings.email = email;
+    if (website !== undefined) settings.website = website;
+    if (currentSession !== undefined) settings.currentSession = currentSession;
+    if (principalTitle !== undefined) settings.principalTitle = principalTitle;
+
+    await settings.save();
+    res.json(settings);
   } catch (err) { res.status(500).json({ message: err.message }); }
 };
 
@@ -387,5 +421,6 @@ module.exports = {
   getMarks, saveMark, saveBulkMarks,
   getAttendance, saveAttendance,
   getMarksheets, generateMarksheets, publishMarksheets, getMarksheetById,
+  getSettings, updateSettings,
   getReports,
 };

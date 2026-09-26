@@ -73,6 +73,7 @@ const getMyMarksheets = async (req, res) => {
     const student = await Student.findOne({ userId: req.user._id });
     if (!student) return res.status(404).json({ message: 'Student not found' });
     const marksheets = await Marksheet.find({ student: student._id, isPublished: true })
+      .populate({ path: 'student', populate: { path: 'userId', select: 'name email phone profileImage' } })
       .populate('exam')
       .sort('-createdAt');
     res.json(marksheets);
@@ -85,7 +86,7 @@ const getMarksheetById = async (req, res) => {
     const student = await Student.findOne({ userId: req.user._id });
     if (!student) return res.status(404).json({ message: 'Student not found' });
     const ms = await Marksheet.findOne({ _id: req.params.id, student: student._id, isPublished: true })
-      .populate({ path: 'student', populate: { path: 'userId', select: 'name email' } })
+      .populate({ path: 'student', populate: { path: 'userId', select: 'name email phone profileImage' } })
       .populate('exam');
     if (!ms) return res.status(404).json({ message: 'Marksheet not found or not published' });
     res.json(ms);

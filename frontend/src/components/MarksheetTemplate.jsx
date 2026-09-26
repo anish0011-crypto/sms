@@ -1,5 +1,6 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { useReactToPrint } from 'react-to-print';
+import API from '../utils/api';
 
 const getGradeColor = (grade) => {
   if (grade === 'A') return '#006600';
@@ -11,6 +12,26 @@ const getGradeColor = (grade) => {
 const MarksheetTemplate = ({ data, onClose }) => {
   const printRef = useRef();
   const [printing, setPrinting] = useState(false);
+  const [schoolSettings, setSchoolSettings] = useState(data?.schoolSettings || {
+    schoolName: 'RKD SCHOOL',
+    tagline: 'Excellence in Education',
+    address: 'Lahore, Pakistan',
+    phone: '03001234567',
+    website: 'www.rkdschool.edu.pk',
+    currentSession: '2024-2025',
+    principalTitle: 'Principal',
+  });
+
+  useEffect(() => {
+    // Dynamically fetch latest school settings from backend
+    API.get('/api/settings')
+      .then(r => {
+        if (r.data && r.data.schoolName) {
+          setSchoolSettings(r.data);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const reactToPrintFn = useReactToPrint({
     contentRef: printRef,
@@ -95,6 +116,11 @@ const MarksheetTemplate = ({ data, onClose }) => {
 
   if (!data) return null;
 
+  // Format Date of Birth nicely if available
+  const formattedDob = data.dob
+    ? new Date(data.dob).toLocaleDateString ? new Date(data.dob).toLocaleDateString('en-GB') : data.dob
+    : null;
+
   return (
     <div className="marksheet-outer-container">
       <div className="no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '10px' }}>
@@ -115,10 +141,10 @@ const MarksheetTemplate = ({ data, onClose }) => {
 
       <div className="marksheet-wrapper">
         <div ref={printRef} className="marksheet-print-area">
-          {/* Header */}
+          {/* Header - Dynamic School Name & Tagline */}
           <div className="ms-header">
-            <h1>🏫 RKD SCHOOL</h1>
-            <p>Excellence in Education</p>
+            <h1>🏫 {schoolSettings.schoolName || 'RKD SCHOOL'}</h1>
+            <p>{schoolSettings.tagline || 'Excellence in Education'}</p>
           </div>
 
           {/* Sub-header */}
@@ -133,7 +159,7 @@ const MarksheetTemplate = ({ data, onClose }) => {
             CLASS {String(data.class || '').toUpperCase()} SECTION {String(data.section || '').toUpperCase()}
           </div>
 
-          {/* Student info */}
+          {/* Student info - Dynamic Student Profile Fields */}
           <div className="ms-student-info">
             <div className="ms-info-row">
               <div className="ms-info-item">
@@ -145,16 +171,53 @@ const MarksheetTemplate = ({ data, onClose }) => {
                 <strong>{data.rollNumber}</strong>
               </div>
             </div>
+
             <div className="ms-info-row">
               <div className="ms-info-item">
                 <span className="ms-info-label">Father Name:</span>
                 <span>{data.fatherName || '—'}</span>
               </div>
               <div className="ms-info-item">
-                <span className="ms-info-label">Class / Sec:</span>
-                <span>{data.class} / {data.section}</span>
+                <span className="ms-info-label">Mother Name:</span>
+                <span>{data.motherName || '—'}</span>
               </div>
             </div>
+
+            <div className="ms-info-row">
+              <div className="ms-info-item">
+                <span className="ms-info-label">Class / Section:</span>
+                <span>{data.class} / {data.section}</span>
+              </div>
+              {formattedDob && (
+                <div className="ms-info-item">
+                  <span className="ms-info-label">Date of Birth:</span>
+                  <span>{formattedDob}</span>
+                </div>
+              )}
+              {data.gender && !formattedDob && (
+                <div className="ms-info-item">
+                  <span className="ms-info-label">Gender:</span>
+                  <span>{data.gender}</span>
+                </div>
+              )}
+            </div>
+
+            {(data.address || data.phone) && (
+              <div className="ms-info-row">
+                {data.phone && (
+                  <div className="ms-info-item">
+                    <span className="ms-info-label">Contact Phone:</span>
+                    <span>{data.phone}</span>
+                  </div>
+                )}
+                {data.address && (
+                  <div className="ms-info-item">
+                    <span className="ms-info-label">Address:</span>
+                    <span>{data.address}</span>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Marks table */}
@@ -212,7 +275,7 @@ const MarksheetTemplate = ({ data, onClose }) => {
           <div className="ms-summary-row">
             <span><strong>Percentage:</strong> {data.percentage}%</span>
             <span><strong>Overall Grade:</strong> <span style={{ color: getGradeColor(data.overallGrade), fontStyle: 'italic', fontWeight: '700' }}>{data.overallGrade}</span></span>
-            <span><strong>Session:</strong> {data.session || '2024-2025'}</span>
+            <span><strong>Session:</strong> {schoolSettings.currentSession || data.session || '2024-2025'}</span>
           </div>
 
           {/* Signatures */}
@@ -223,7 +286,7 @@ const MarksheetTemplate = ({ data, onClose }) => {
             </div>
             <div className="ms-sig">
               <div className="line"></div>
-              <p>Principal</p>
+              <p>{schoolSettings.principalTitle || 'Principal'}</p>
             </div>
             <div className="ms-sig">
               <div className="line"></div>
@@ -231,9 +294,9 @@ const MarksheetTemplate = ({ data, onClose }) => {
             </div>
           </div>
 
-          {/* School stamp area */}
+          {/* School stamp area - Dynamic School Footer */}
           <div className="ms-bottom-bar">
-            RKD School | www.rkdschool.edu.pk | Tel: 03001234567 | Address: Lahore, Pakistan
+            {schoolSettings.schoolName || 'RKD School'} | {schoolSettings.website || 'www.rkdschool.edu.pk'} | Tel: {schoolSettings.phone || '03001234567'} | Address: {schoolSettings.address || 'Lahore, Pakistan'}
           </div>
         </div>
       </div>

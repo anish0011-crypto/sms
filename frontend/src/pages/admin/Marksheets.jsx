@@ -50,7 +50,12 @@ const Marksheets = () => {
       setViewData({
         studentName: data.student?.userId?.name || '—',
         fatherName: data.student?.fatherName || '—',
+        motherName: data.student?.motherName || '—',
         rollNumber: data.student?.rollNumber || '—',
+        dob: data.student?.dob || null,
+        gender: data.student?.gender || '',
+        address: data.student?.address || '',
+        phone: data.student?.userId?.phone || '',
         class: data.class, section: data.section,
         session: data.session, month: data.month, year: data.year,
         marks: data.marks, totalMarks: data.totalMarks, obtainedMarks: data.obtainedMarks,

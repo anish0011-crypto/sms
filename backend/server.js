@@ -44,6 +44,8 @@ app.use('/api/admin', require('./routes/admin'));
 app.use('/api/teacher', require('./routes/teacher'));
 app.use('/api/student', require('./routes/student'));
 
+app.get('/api/settings', require('./controllers/adminController').getSettings);
+
 app.get('/', (req, res) => res.json({ message: '🎓 RKD School API is running!' }));
 
 app.use((err, req, res, next) => {

@@ -316,7 +316,7 @@ const getMyMarksheets = async (req, res) => {
     let marksheets;
     if (req.query.exam || req.query.class) {
       marksheets = await Marksheet.find(filter)
-        .populate({ path: 'student', populate: { path: 'userId', select: 'name email' } })
+        .populate({ path: 'student', populate: { path: 'userId', select: 'name email phone profileImage' } })
         .populate('exam')
         .sort('-createdAt');
     } else if (teacher.assignedClasses && teacher.assignedClasses.length > 0) {
@@ -325,12 +325,12 @@ const getMyMarksheets = async (req, res) => {
         section: { $regex: new RegExp(`^${ac.section.trim()}$`, 'i') }
       }));
       marksheets = await Marksheet.find({ $or: conditions })
-        .populate({ path: 'student', populate: { path: 'userId', select: 'name email' } })
+        .populate({ path: 'student', populate: { path: 'userId', select: 'name email phone profileImage' } })
         .populate('exam')
         .sort('-createdAt');
     } else {
       marksheets = await Marksheet.find()
-        .populate({ path: 'student', populate: { path: 'userId', select: 'name email' } })
+        .populate({ path: 'student', populate: { path: 'userId', select: 'name email phone profileImage' } })
         .populate('exam')
         .sort('-createdAt');
     }
@@ -342,7 +342,7 @@ const getMyMarksheets = async (req, res) => {
 const getMarksheetById = async (req, res) => {
   try {
     const ms = await Marksheet.findById(req.params.id)
-      .populate({ path: 'student', populate: { path: 'userId', select: 'name email' } })
+      .populate({ path: 'student', populate: { path: 'userId', select: 'name email phone profileImage' } })
       .populate('exam');
     if (!ms) return res.status(404).json({ message: 'Marksheet not found' });
     res.json(ms);
