@@ -1,6 +1,5 @@
 import { useRef, useState } from 'react';
 import { useReactToPrint } from 'react-to-print';
-import toast from 'react-hot-toast';
 
 const getGradeColor = (grade) => {
   if (grade === 'A') return '#006600';
@@ -47,15 +46,19 @@ const MarksheetTemplate = ({ data, onClose }) => {
               .ms-subheader { background: #fff; text-align: center; padding: 8px; border-bottom: 1px solid #1a6b3c; }
               .ms-subheader p { font-size: 13px; font-weight: 700; margin: 0; text-transform: uppercase; }
               .ms-class-band { background: #1a6b3c !important; color: #fff !important; text-align: center; padding: 6px; font-size: 13px; font-weight: 700; }
-              .ms-info-cell { padding: 6px 12px; font-size: 12.5px; }
-              .ms-info-label { font-weight: 700; }
+              .ms-student-info { background: #fff; border-bottom: 1px solid #1a6b3c; padding: 8px 12px; display: flex; flex-direction: column; gap: 6px; }
+              .ms-info-row { display: flex; justify-content: space-between; gap: 12px; }
+              .ms-info-item { flex: 1; font-size: 12.5px; display: flex; gap: 6px; justify-content: space-between; }
+              .ms-info-label { font-weight: 700; color: #1a6b3c; }
               .ms-marks-table { width: 100%; border-collapse: collapse; font-size: 13px; }
               .ms-marks-table thead tr { background: #1a6b3c !important; color: #fff !important; }
               .ms-marks-table th, .ms-marks-table td { padding: 7px 12px; text-align: center; border-bottom: 1px solid #d0e8d8; }
               .ms-footer { display: grid; grid-template-columns: repeat(4, 1fr); background: #1a6b3c !important; color: #fff !important; text-align: center; }
               .ms-footer-cell { padding: 8px 10px; border-right: 1px solid rgba(255,255,255,0.2); }
+              .ms-summary-row { background: #e8f5ee; padding: 8px 14px; display: flex; justify-content: space-between; font-size: 13px; border-bottom: 1px solid #1a6b3c; }
               .ms-signature-row { display: grid; grid-template-columns: 1fr 1fr 1fr; padding: 24px 14px 10px; background: #fff; border-top: 1px solid #1a6b3c; text-align: center; font-size: 12px; }
               .ms-sig .line { border-top: 1px solid #000; margin: 0 auto 4px; width: 75%; }
+              .ms-bottom-bar { background: #1a6b3c; color: #fff; text-align: center; padding: 8px; font-size: 11px; }
             </style>
           </head>
           <body>
@@ -93,141 +96,145 @@ const MarksheetTemplate = ({ data, onClose }) => {
   if (!data) return null;
 
   return (
-    <div>
+    <div className="marksheet-outer-container">
       <div className="no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '10px' }}>
-        <div style={{ fontSize: '13px', color: 'var(--text2)' }}>
-          Tip: Select <strong>"Save as PDF"</strong> in your browser's print dialog to download.
+        <div style={{ fontSize: '12px', color: 'var(--text2)' }}>
+          💡 Tip: Use <strong>"Save as PDF"</strong> in browser print options to download.
         </div>
         <div style={{ display: 'flex', gap: '10px' }}>
-          <button className="btn btn-primary" onClick={handlePrintClick} disabled={printing}>
+          <button className="btn btn-primary btn-sm" onClick={handlePrintClick} disabled={printing}>
             🖨️ {printing ? 'Preparing...' : 'Print / Download PDF'}
           </button>
           {onClose && (
-            <button className="btn btn-secondary" onClick={onClose}>
+            <button className="btn btn-secondary btn-sm" onClick={onClose}>
               Close
             </button>
           )}
         </div>
       </div>
 
-      <div ref={printRef} className="marksheet-print-area">
-        {/* Header */}
-        <div className="ms-header">
-          <h1>🏫 RKD SCHOOL</h1>
-          <p style={{ fontSize: '13px', marginTop: '4px', opacity: 0.9 }}>Excellence in Education</p>
-        </div>
+      <div className="marksheet-wrapper">
+        <div ref={printRef} className="marksheet-print-area">
+          {/* Header */}
+          <div className="ms-header">
+            <h1>🏫 RKD SCHOOL</h1>
+            <p>Excellence in Education</p>
+          </div>
 
-        {/* Sub-header */}
-        <div className="ms-subheader">
-          <p>
-            MARK SHEET FOR THE YEAR {data.year || '2025'} {data.month ? `FOR THE MONTH OF ${data.month.toUpperCase()}` : ''}
-          </p>
-        </div>
+          {/* Sub-header */}
+          <div className="ms-subheader">
+            <p>
+              MARK SHEET FOR THE YEAR {data.year || '2025'} {data.month ? `FOR THE MONTH OF ${data.month.toUpperCase()}` : ''}
+            </p>
+          </div>
 
-        {/* Class band */}
-        <div className="ms-class-band">
-          CLASS {String(data.class || '').toUpperCase()} SECTION {String(data.section || '').toUpperCase()}
-        </div>
+          {/* Class band */}
+          <div className="ms-class-band">
+            CLASS {String(data.class || '').toUpperCase()} SECTION {String(data.section || '').toUpperCase()}
+          </div>
 
-        {/* Student info */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderBottom: '1px solid #1a6b3c' }}>
-          <div style={{ borderRight: '1px solid #ccc' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderBottom: '1px solid #ccc' }}>
-              <div className="ms-info-cell ms-info-label">Student Name</div>
-              <div className="ms-info-cell">{data.studentName}</div>
+          {/* Student info */}
+          <div className="ms-student-info">
+            <div className="ms-info-row">
+              <div className="ms-info-item">
+                <span className="ms-info-label">Student Name:</span>
+                <strong>{data.studentName}</strong>
+              </div>
+              <div className="ms-info-item">
+                <span className="ms-info-label">Roll Number:</span>
+                <strong>{data.rollNumber}</strong>
+              </div>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr' }}>
-              <div className="ms-info-cell ms-info-label">Father Name</div>
-              <div className="ms-info-cell">{data.fatherName || '—'}</div>
+            <div className="ms-info-row">
+              <div className="ms-info-item">
+                <span className="ms-info-label">Father Name:</span>
+                <span>{data.fatherName || '—'}</span>
+              </div>
+              <div className="ms-info-item">
+                <span className="ms-info-label">Class / Sec:</span>
+                <span>{data.class} / {data.section}</span>
+              </div>
             </div>
           </div>
-          <div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderBottom: '1px solid #ccc' }}>
-              <div className="ms-info-cell ms-info-label">Roll Number</div>
-              <div className="ms-info-cell" style={{ fontWeight: '700' }}>{data.rollNumber}</div>
+
+          {/* Marks table */}
+          <div className="ms-table-container">
+            <table className="ms-marks-table">
+              <thead>
+                <tr>
+                  <th style={{ width: '40px' }}>S No</th>
+                  <th style={{ textAlign: 'left' }}>Subjects</th>
+                  <th style={{ width: '80px' }}>Total Marks</th>
+                  <th style={{ width: '90px' }}>Obtained Marks</th>
+                  <th style={{ width: '60px', background: '#c8e6d0', color: '#000' }}>Grade</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.marks?.map((m, i) => (
+                  <tr key={i}>
+                    <td>{i + 1}</td>
+                    <td style={{ textAlign: 'left', fontWeight: '600' }}>{m.subjectName}</td>
+                    <td>{m.totalMarks || 100}</td>
+                    <td style={{ fontWeight: '700' }}>{m.obtainedMarks}</td>
+                    <td className="grade-col" style={{ color: getGradeColor(m.grade), fontStyle: 'italic', fontWeight: '700' }}>{m.grade}</td>
+                  </tr>
+                ))}
+                {(!data.marks || data.marks.length === 0) && (
+                  <tr>
+                    <td colSpan="5" style={{ padding: '20px', color: '#888' }}>No subject marks recorded</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Footer summary */}
+          <div className="ms-footer">
+            <div className="ms-footer-cell">
+              <div className="label">Total Marks</div>
+              <div className="value">{data.totalMarks}</div>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr' }}>
-              <div className="ms-info-cell ms-info-label">Class</div>
-              <div className="ms-info-cell">{data.class} / {data.section}</div>
+            <div className="ms-footer-cell">
+              <div className="label">Total Obtained</div>
+              <div className="value">{data.obtainedMarks}</div>
+            </div>
+            <div className="ms-footer-cell">
+              <div className="label">Remarks</div>
+              <div className="value remarks">{data.remarks || 'Good'}</div>
+            </div>
+            <div className="ms-footer-cell">
+              <div className="label">Rank</div>
+              <div className="value">{data.rank ? `#${data.rank}` : '—'}</div>
             </div>
           </div>
-        </div>
 
-        {/* Marks table */}
-        <table className="ms-marks-table">
-          <thead>
-            <tr>
-              <th style={{ width: '60px' }}>S No</th>
-              <th style={{ textAlign: 'left' }}>Subjects</th>
-              <th>Total Marks</th>
-              <th>Obtained Marks</th>
-              <th style={{ background: '#c8e6d0', color: '#000' }}>Grade</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.marks?.map((m, i) => (
-              <tr key={i}>
-                <td>{i + 1}</td>
-                <td style={{ textAlign: 'left', fontWeight: '600' }}>{m.subjectName}</td>
-                <td>{m.totalMarks || 100}</td>
-                <td style={{ fontWeight: '700' }}>{m.obtainedMarks}</td>
-                <td className="grade-col" style={{ color: getGradeColor(m.grade), fontStyle: 'italic', fontWeight: '700' }}>{m.grade}</td>
-              </tr>
-            ))}
-            {(!data.marks || data.marks.length === 0) && (
-              <tr>
-                <td colSpan="5" style={{ padding: '20px', color: '#888' }}>No subject marks recorded</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+          {/* Percentage row */}
+          <div className="ms-summary-row">
+            <span><strong>Percentage:</strong> {data.percentage}%</span>
+            <span><strong>Overall Grade:</strong> <span style={{ color: getGradeColor(data.overallGrade), fontStyle: 'italic', fontWeight: '700' }}>{data.overallGrade}</span></span>
+            <span><strong>Session:</strong> {data.session || '2024-2025'}</span>
+          </div>
 
-        {/* Footer summary */}
-        <div className="ms-footer">
-          <div className="ms-footer-cell">
-            <div className="label">Total Marks</div>
-            <div className="value">{data.totalMarks}</div>
+          {/* Signatures */}
+          <div className="ms-signature-row">
+            <div className="ms-sig">
+              <div className="line"></div>
+              <p>Class Teacher</p>
+            </div>
+            <div className="ms-sig">
+              <div className="line"></div>
+              <p>Principal</p>
+            </div>
+            <div className="ms-sig">
+              <div className="line"></div>
+              <p>Parent / Guardian</p>
+            </div>
           </div>
-          <div className="ms-footer-cell">
-            <div className="label">Total Obtained</div>
-            <div className="value">{data.obtainedMarks}</div>
-          </div>
-          <div className="ms-footer-cell">
-            <div className="label">Remarks</div>
-            <div className="value remarks">{data.remarks || 'Good'}</div>
-          </div>
-          <div className="ms-footer-cell">
-            <div className="label">Rank</div>
-            <div className="value">{data.rank ? `#${data.rank}` : '—'}</div>
-          </div>
-        </div>
 
-        {/* Percentage row */}
-        <div style={{ background: '#e8f5ee', padding: '8px 14px', display: 'flex', justifyContent: 'space-between', fontSize: '13px', color: '#000', borderBottom: '1px solid #1a6b3c' }}>
-          <span><strong>Percentage:</strong> {data.percentage}%</span>
-          <span><strong>Overall Grade:</strong> <span style={{ color: getGradeColor(data.overallGrade), fontStyle: 'italic', fontWeight: '700' }}>{data.overallGrade}</span></span>
-          <span><strong>Session:</strong> {data.session || '2024-2025'}</span>
-        </div>
-
-        {/* Signatures */}
-        <div className="ms-signature-row">
-          <div className="ms-sig">
-            <div className="line"></div>
-            <p>Class Teacher</p>
+          {/* School stamp area */}
+          <div className="ms-bottom-bar">
+            RKD School | www.rkdschool.edu.pk | Tel: 03001234567 | Address: Lahore, Pakistan
           </div>
-          <div className="ms-sig">
-            <div className="line"></div>
-            <p>Principal</p>
-          </div>
-          <div className="ms-sig">
-            <div className="line"></div>
-            <p>Parent / Guardian</p>
-          </div>
-        </div>
-
-        {/* School stamp area */}
-        <div style={{ background: '#1a6b3c', color: '#fff', textAlign: 'center', padding: '8px', fontSize: '11px' }}>
-          RKD School | www.rkdschool.edu.pk | Tel: 03001234567 | Address: Lahore, Pakistan
         </div>
       </div>
     </div>

@@ -1118,6 +1118,178 @@ tbody td { padding: 12px 16px; color: var(--text); vertical-align: middle; }
   }
 }
 
+/* ========== MARKSHEET STYLES ========== */
+.marksheet-outer-container {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+.marksheet-wrapper {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  box-sizing: border-box;
+}
+.marksheet-print-area {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  border: 2px solid #1a6b3c;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #f0faf0;
+  color: #000;
+  margin: 0 auto;
+}
+.ms-header {
+  background: #1a6b3c;
+  color: #ffffff;
+  text-align: center;
+  padding: 16px 12px;
+}
+.ms-header h1 {
+  font-size: 24px;
+  font-weight: 900;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+.ms-header p {
+  font-size: 13px;
+  margin-top: 4px;
+  opacity: 0.9;
+}
+.ms-subheader {
+  background: #ffffff;
+  text-align: center;
+  padding: 8px 12px;
+  border-bottom: 1px solid #1a6b3c;
+  color: #000;
+}
+.ms-subheader p {
+  font-size: 13px;
+  font-weight: 700;
+  margin: 0;
+  text-transform: uppercase;
+}
+.ms-class-band {
+  background: #1a6b3c;
+  color: #ffffff;
+  text-align: center;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 700;
+}
+.ms-student-info {
+  background: #ffffff;
+  border-bottom: 1px solid #1a6b3c;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.ms-info-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+.ms-info-item {
+  flex: 1;
+  font-size: 13px;
+  color: #111;
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px dashed #d0d0d0;
+  padding-bottom: 3px;
+}
+.ms-info-label {
+  font-weight: 700;
+  color: #1a6b3c;
+}
+.ms-table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+table.ms-marks-table {
+  width: 100% !important;
+  min-width: 100% !important;
+  max-width: 100% !important;
+  border-collapse: collapse;
+  font-size: 13px;
+  background: #ffffff;
+}
+.ms-marks-table thead tr {
+  background: #1a6b3c !important;
+  color: #ffffff !important;
+}
+.ms-marks-table th,
+.ms-marks-table td {
+  padding: 8px 10px;
+  text-align: center;
+  border-bottom: 1px solid #d0e8d8;
+  color: #000;
+}
+.ms-footer {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  background: #1a6b3c;
+  color: #ffffff;
+  text-align: center;
+}
+.ms-footer-cell {
+  padding: 8px 10px;
+  border-right: 1px solid rgba(255,255,255,0.25);
+}
+.ms-footer-cell:last-child {
+  border-right: none;
+}
+.ms-footer-cell .label {
+  font-size: 11px;
+  opacity: 0.85;
+  text-transform: uppercase;
+}
+.ms-footer-cell .value {
+  font-size: 16px;
+  font-weight: 800;
+  margin-top: 2px;
+}
+.ms-summary-row {
+  background: #e8f5ee;
+  padding: 8px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  color: #000;
+  border-bottom: 1px solid #1a6b3c;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.ms-signature-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  padding: 24px 14px 12px;
+  background: #ffffff;
+  border-top: 1px solid #1a6b3c;
+  text-align: center;
+  font-size: 12px;
+  color: #000;
+  gap: 12px;
+}
+.ms-sig .line {
+  border-top: 1px solid #000000;
+  margin: 0 auto 4px;
+  width: 75%;
+}
+.ms-bottom-bar {
+  background: #1a6b3c;
+  color: #ffffff;
+  text-align: center;
+  padding: 8px 12px;
+  font-size: 11px;
+}
+
 /* ========== PERFORMANCE CHART ========== */
 .chart-card { padding: 24px; }
 .chart-header { margin-bottom: 20px; }
@@ -1367,19 +1539,37 @@ tbody td { padding: 12px 16px; color: var(--text); vertical-align: middle; }
   .sidebar-logo-text h2 { font-size: 13px; }
 
   /* ---- Marksheet modal fix ---- */
-  .marksheet-print-area {
-    max-width: 100%;
-    font-size: 11.5px;
-    overflow-x: auto;
+  .marksheet-outer-container {
+    width: 100%;
+    overflow-x: hidden;
   }
-  .ms-header h1 { font-size: 20px; letter-spacing: 1px; }
-  .ms-info-cell { padding: 6px 8px; font-size: 11.5px; }
-  .ms-marks-table thead th { padding: 7px 8px; font-size: 11px; }
-  .ms-marks-table tbody td { padding: 7px 8px; font-size: 11.5px; }
+  .marksheet-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+  }
+  .marksheet-print-area {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    font-size: 11.5px;
+  }
+  .ms-header { padding: 12px; }
+  .ms-header h1 { font-size: 18px; letter-spacing: 0.5px; }
+  .ms-header p { font-size: 11px; }
+  .ms-subheader p { font-size: 11px; }
+  .ms-class-band { font-size: 11px; padding: 5px; }
+  .ms-student-info { padding: 8px 10px; gap: 6px; }
+  .ms-info-row { flex-direction: column; gap: 4px; }
+  .ms-info-item { font-size: 11.5px; }
+  table.ms-marks-table { min-width: 100% !important; font-size: 11.5px; }
+  .ms-marks-table th, .ms-marks-table td { padding: 6px 6px; }
   .ms-footer { grid-template-columns: 1fr 1fr; }
-  .ms-footer-cell { padding: 8px 6px; font-size: 11px; }
+  .ms-footer-cell { padding: 6px 4px; }
   .ms-footer-cell .value { font-size: 13px; }
-  .ms-signature-row { padding: 16px 10px 10px; gap: 8px; }
+  .ms-summary-row { font-size: 11px; flex-direction: column; align-items: flex-start; gap: 4px; }
+  .ms-signature-row { padding: 16px 8px 8px; gap: 10px; }
+  .ms-bottom-bar { font-size: 9.5px; padding: 6px; word-break: break-word; }
 
   /* ---- Attendance grid ---- */
   .attendance-grid { grid-template-columns: repeat(auto-fill, minmax(34px, 1fr)); gap: 4px; }
@@ -1432,13 +1622,11 @@ tbody td { padding: 12px 16px; color: var(--text); vertical-align: middle; }
   .card { padding: 12px; }
 
   /* ---- Modal ---- */
-  .modal, .modal-lg { padding: 16px 12px; max-height: 95vh; }
+  .modal, .modal-lg { padding: 14px 10px; max-height: 95vh; }
 
   /* ---- Marksheet ---- */
-  .marksheet-print-area { font-size: 11px; }
-  .ms-header { padding: 12px; }
-  .ms-header h1 { font-size: 17px; }
-  .ms-signature-row { grid-template-columns: 1fr; gap: 16px; }
+  .ms-header h1 { font-size: 16px; }
+  .ms-signature-row { grid-template-columns: 1fr; gap: 14px; }
 }
 
 /* ========== RESPONSIVE EXTRA SMALL (≤ 360px) ========== */
@@ -1447,7 +1635,7 @@ tbody td { padding: 12px 16px; color: var(--text); vertical-align: middle; }
   .topbar { padding: 0 10px; }
   .topbar-title h1 { font-size: 12px; max-width: 100px; }
   table { min-width: 320px; font-size: 11.5px; }
-  .modal, .modal-lg { padding: 14px 10px; }
+  .modal, .modal-lg { padding: 12px 8px; }
   .btn { font-size: 12px; padding: 8px 10px; }
   .stat-info h3 { font-size: 18px; }
 }
