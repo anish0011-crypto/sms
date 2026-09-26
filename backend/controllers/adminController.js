@@ -204,16 +204,58 @@ const getMarks = async (req, res) => {
 const saveMark = async (req, res) => {
   try {
     const { student, exam, subjectName, obtainedMarks, totalMarks } = req.body;
+    const obt = Number(obtainedMarks);
+    const tot = Number(totalMarks) || 100;
+    const pct = tot > 0 ? (obt / tot) * 100 : 0;
+    let grade = 'F';
+    if (pct >= 80) grade = 'A';
+    else if (pct >= 60) grade = 'B';
+    else if (pct >= 45) grade = 'C';
+    else if (pct >= 33) grade = 'D';
+
     let mark = await Mark.findOne({ student, exam, subjectName });
     if (mark) {
-      mark.obtainedMarks = obtainedMarks;
-      mark.totalMarks = totalMarks;
+      mark.obtainedMarks = obt;
+      mark.totalMarks = tot;
+      mark.grade = grade;
       mark.enteredBy = req.user._id;
       await mark.save();
     } else {
-      mark = await Mark.create({ student, exam, subjectName, obtainedMarks, totalMarks, enteredBy: req.user._id });
+      mark = await Mark.create({ student, exam, subjectName, obtainedMarks: obt, totalMarks: tot, grade, enteredBy: req.user._id });
     }
     res.json(mark);
+  } catch (err) { res.status(500).json({ message: err.message }); }
+};
+
+const saveBulkMarks = async (req, res) => {
+  try {
+    const { exam, marks } = req.body;
+    if (!exam || !Array.isArray(marks)) return res.status(400).json({ message: 'Exam and marks array required' });
+    const results = [];
+    for (const m of marks) {
+      const { student, subjectName, obtainedMarks, totalMarks } = m;
+      const obt = Number(obtainedMarks);
+      const tot = Number(totalMarks) || 100;
+      const pct = tot > 0 ? (obt / tot) * 100 : 0;
+      let grade = 'F';
+      if (pct >= 80) grade = 'A';
+      else if (pct >= 60) grade = 'B';
+      else if (pct >= 45) grade = 'C';
+      else if (pct >= 33) grade = 'D';
+
+      let mark = await Mark.findOne({ student, exam, subjectName });
+      if (mark) {
+        mark.obtainedMarks = obt;
+        mark.totalMarks = tot;
+        mark.grade = grade;
+        mark.enteredBy = req.user._id;
+        await mark.save();
+      } else {
+        mark = await Mark.create({ student, exam, subjectName, obtainedMarks: obt, totalMarks: tot, grade, enteredBy: req.user._id });
+      }
+      results.push(mark);
+    }
+    res.json({ message: `${results.length} marks saved successfully`, count: results.length });
   } catch (err) { res.status(500).json({ message: err.message }); }
 };
 
@@ -342,7 +384,7 @@ module.exports = {
   getClasses, createClass, updateClass, deleteClass,
   getSubjects, createSubject, updateSubject, deleteSubject,
   getExams, createExam, updateExam, deleteExam,
-  getMarks, saveMark,
+  getMarks, saveMark, saveBulkMarks,
   getAttendance, saveAttendance,
   getMarksheets, generateMarksheets, publishMarksheets, getMarksheetById,
   getReports,

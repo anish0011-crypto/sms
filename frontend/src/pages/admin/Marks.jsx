@@ -59,10 +59,44 @@ const Marks = () => {
     return { g: 'F', cls: 'grade-f' };
   };
 
+  const handleSaveAll = async () => {
+    if (!selectedExam || !examInfo?.subjects?.length) return;
+    const marksToSave = [];
+    students.forEach(s => {
+      const sm = marksData[s._id] || {};
+      examInfo.subjects.forEach(sub => {
+        const val = sm[sub.name];
+        if (val !== undefined && val !== '') {
+          marksToSave.push({
+            student: s._id,
+            subjectName: sub.name,
+            obtainedMarks: Number(val),
+            totalMarks: sub.totalMarks || 100,
+          });
+        }
+      });
+    });
+    if (marksToSave.length === 0) {
+      toast.error('No marks entered to save');
+      return;
+    }
+    try {
+      const { data } = await API.post('/admin/marks/bulk', { exam: selectedExam, marks: marksToSave });
+      toast.success(data.message || 'Saved all marks!');
+    } catch {
+      toast.error('Failed to save all marks');
+    }
+  };
+
   return (
     <div className="page-wrapper animate-fade">
       <div className="page-header">
         <div><h2>Marks Management</h2><p>Enter and review student marks</p></div>
+        {selectedExam && (
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <button className="btn btn-primary" onClick={handleSaveAll}>💾 Save All Marks</button>
+          </div>
+        )}
       </div>
 
       <div className="card" style={{ marginBottom: '24px' }}>

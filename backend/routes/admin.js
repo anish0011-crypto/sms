@@ -7,7 +7,7 @@ const {
   getClasses, createClass, updateClass, deleteClass,
   getSubjects, createSubject, updateSubject, deleteSubject,
   getExams, createExam, updateExam, deleteExam,
-  getMarks, saveMark, getAttendance, saveAttendance,
+  getMarks, saveMark, saveBulkMarks, getAttendance, saveAttendance,
   getMarksheets, generateMarksheets, publishMarksheets, getMarksheetById,
   getReports,
 } = require('../controllers/adminController');
@@ -37,6 +37,7 @@ router.put('/exams/:id', updateExam);
 router.delete('/exams/:id', deleteExam);
 router.get('/marks', getMarks);
 router.post('/marks', saveMark);
+router.post('/marks/bulk', saveBulkMarks);
 router.get('/attendance', getAttendance);
 router.post('/attendance', saveAttendance);
 router.get('/marksheets', getMarksheets);
